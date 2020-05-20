@@ -7,12 +7,15 @@ from pygame import *
 import sys
 from os.path import abspath, dirname
 from random import choice
+# imports pygame module 
+# imports random module
 
 BASE_PATH = abspath(dirname(__file__))
 FONT_PATH = BASE_PATH + '/fonts/'
 IMAGE_PATH = BASE_PATH + '/images/'
 SOUND_PATH = BASE_PATH + '/sounds/'
-
+# creates path to imput:
+# fonts, sounds, and images
 # Colors (R, G, B)
 WHITE = (255, 255, 255)
 GREEN = (78, 255, 87)
@@ -20,7 +23,7 @@ YELLOW = (241, 255, 0)
 BLUE = (80, 255, 239)
 PURPLE = (203, 0, 255)
 RED = (237, 28, 36)
-
+# Colors used in gameplay template
 SCREEN = display.set_mode((800, 600))
 FONT = FONT_PATH + 'space_invaders.ttf'
 IMG_NAMES = ['ship', 'mystery',
@@ -31,11 +34,16 @@ IMG_NAMES = ['ship', 'mystery',
              'laser', 'enemylaser']
 IMAGES = {name: image.load(IMAGE_PATH + '{}.png'.format(name)).convert_alpha()
           for name in IMG_NAMES}
+# Gives images "naming conventions"
+'''
+This makes finding paricular visual parts easier and also ensures 
+everything can be categorized correctly
+'''
 
 BLOCKERS_POSITION = 450
 ENEMY_DEFAULT_POSITION = 65  # Initial value for a new game
 ENEMY_MOVE_DOWN = 35
-
+# Default start positions for the enemy sprites at start of gameplay
 
 class Ship(sprite.Sprite):
     def __init__(self):
@@ -43,15 +51,15 @@ class Ship(sprite.Sprite):
         self.image = IMAGES['ship']
         self.rect = self.image.get_rect(topleft=(375, 540))
         self.speed = 5
-
+# Code initializes protagonist sprite (STARSHIP)
     def update(self, keys, *args):
         if keys[K_LEFT] and self.rect.x > 10:
             self.rect.x -= self.speed
         if keys[K_RIGHT] and self.rect.x < 740:
             self.rect.x += self.speed
         game.screen.blit(self.image, self.rect)
-
-
+# Gives player the ability to manuver ship with the "Left" and "Right" keys 
+# RIGHT key moves ship in that direction and LEFT key moves ship in opposite direction
 class Bullet(sprite.Sprite):
     def __init__(self, xpos, ypos, direction, speed, filename, side):
         sprite.Sprite.__init__(self)
@@ -61,13 +69,14 @@ class Bullet(sprite.Sprite):
         self.direction = direction
         self.side = side
         self.filename = filename
+# Creates the bullet sprite
 
     def update(self, keys, *args):
         game.screen.blit(self.image, self.rect)
         self.rect.y += self.speed * self.direction
         if self.rect.y < 15 or self.rect.y > 600:
             self.kill()
-
+# After traveling a given distance, bullet destroys itself
 
 class Enemy(sprite.Sprite):
     def __init__(self, row, column):
@@ -79,16 +88,17 @@ class Enemy(sprite.Sprite):
         self.index = 0
         self.image = self.images[self.index]
         self.rect = self.image.get_rect()
-
+# Code creates the enemy sprite 
+# Connects to enemy sprite Image file
     def toggle_image(self):
         self.index += 1
         if self.index >= len(self.images):
             self.index = 0
         self.image = self.images[self.index]
-
+# Enemy Sprite image
     def update(self, *args):
         game.screen.blit(self.image, self.rect)
-
+# Updates image to gameplay
     def load_images(self):
         images = {0: ['1_2', '1_1'],
                   1: ['2_2', '2_1'],
@@ -100,7 +110,7 @@ class Enemy(sprite.Sprite):
                       images[self.row])
         self.images.append(transform.scale(img1, (40, 35)))
         self.images.append(transform.scale(img2, (40, 35)))
-
+# Loads the various images and postions them to scale
 
 class EnemiesGroup(sprite.Group):
     def __init__(self, columns, rows):
