@@ -130,14 +130,14 @@ class EnemiesGroup(sprite.Group):
         self._aliveColumns = list(range(columns))
         self._leftAliveColumn = 0
         self._rightAliveColumn = columns - 1
-
+# INITIALIZES ENEMY SPRITES GROUP
     def update(self, current_time):
         if current_time - self.timer > self.moveTime:
             if self.direction == 1:
                 max_move = self.rightMoves + self.rightAddMove
             else:
                 max_move = self.leftMoves + self.leftAddMove
-
+# Random time set for enemy sprites movement
             if self.moveNumber >= max_move:
                 self.leftMoves = 30 + self.rightAddMove
                 self.rightMoves = 30 + self.leftAddMove
@@ -155,20 +155,9 @@ class EnemiesGroup(sprite.Group):
                     enemy.rect.x += velocity
                     enemy.toggle_image()
                 self.moveNumber += 1
-
+# Velocity feature for enemy sprites
             self.timer += self.moveTime
-
-    def add_internal(self, *sprites):
-        super(EnemiesGroup, self).add_internal(*sprites)
-        for s in sprites:
-            self.enemies[s.row][s.column] = s
-
-    def remove_internal(self, *sprites):
-        super(EnemiesGroup, self).remove_internal(*sprites)
-        for s in sprites:
-            self.kill(s)
-        self.update_speed()
-
+# Operated by self timer
     def is_column_dead(self, column):
         return not any(self.enemies[row][column]
                        for row in range(self.rows))
@@ -178,7 +167,7 @@ class EnemiesGroup(sprite.Group):
         col_enemies = (self.enemies[row - 1][col]
                        for row in range(self.rows, 0, -1))
         return next((en for en in col_enemies if en is not None), None)
-
+# uses random module to mobilize enemy sprites
     def update_speed(self):
         if len(self) == 1:
             self.moveTime = 200
@@ -203,7 +192,7 @@ class EnemiesGroup(sprite.Group):
                 self.leftAddMove += 5
                 is_column_dead = self.is_column_dead(self._leftAliveColumn)
 
-
+# Enemy sprites can die if it by player bullet
 class Blocker(sprite.Sprite):
     def __init__(self, size, color, row, column):
         sprite.Sprite.__init__(self)
@@ -215,10 +204,13 @@ class Blocker(sprite.Sprite):
         self.rect = self.image.get_rect()
         self.row = row
         self.column = column
-
+'''
+Creates obstacle sprite
+Defines the: size, color, and surface of sprites
+'''
     def update(self, keys, *args):
         game.screen.blit(self.image, self.rect)
-
+# Updates gameplay
 
 class Mystery(sprite.Sprite):
     def __init__(self):
@@ -233,7 +225,7 @@ class Mystery(sprite.Sprite):
         self.mysteryEntered = mixer.Sound(SOUND_PATH + 'mysteryentered.wav')
         self.mysteryEntered.set_volume(0.3)
         self.playSound = True
-
+# Initializes the mystery sprite and sets the parameters 
     def update(self, keys, currentTime, *args):
         resetTimer = False
         passed = currentTime - self.timer
@@ -249,7 +241,7 @@ class Mystery(sprite.Sprite):
                 self.mysteryEntered.fadeout(4000)
                 self.rect.x -= 2
                 game.screen.blit(self.image, self.rect)
-
+# Mystery Sprite (rocket ship) operates on a timer and emits a sound when flying
         if self.rect.x > 830:
             self.playSound = True
             self.direction = -1
@@ -260,7 +252,7 @@ class Mystery(sprite.Sprite):
             resetTimer = True
         if passed > self.moveTime and resetTimer:
             self.timer = currentTime
-
+# Explains when to restart mystery ship timer
 
 class EnemyExplosion(sprite.Sprite):
     def __init__(self, enemy, *groups):
@@ -269,12 +261,12 @@ class EnemyExplosion(sprite.Sprite):
         self.image2 = transform.scale(self.get_image(enemy.row), (50, 45))
         self.rect = self.image.get_rect(topleft=(enemy.rect.x, enemy.rect.y))
         self.timer = time.get_ticks()
-
+# enemy sprites and import images into the correct area
     @staticmethod
     def get_image(row):
         img_colors = ['purple', 'blue', 'blue', 'green', 'green']
         return IMAGES['explosion{}'.format(img_colors[row])]
-
+# Sets colors for the "explosion" sprite
     def update(self, current_time, *args):
         passed = current_time - self.timer
         if passed <= 100:
@@ -283,7 +275,7 @@ class EnemyExplosion(sprite.Sprite):
             game.screen.blit(self.image2, (self.rect.x - 6, self.rect.y - 6))
         elif 400 < passed:
             self.kill()
-
+# Disappear
 
 class MysteryExplosion(sprite.Sprite):
     def __init__(self, mystery, score, *groups):
@@ -291,14 +283,14 @@ class MysteryExplosion(sprite.Sprite):
         self.text = Text(FONT, 20, str(score), WHITE,
                          mystery.rect.x + 20, mystery.rect.y + 6)
         self.timer = time.get_ticks()
-
+# More parameters being set for the "mystery sprite"
     def update(self, current_time, *args):
         passed = current_time - self.timer
         if passed <= 200 or 400 < passed <= 600:
             self.text.draw(game.screen)
         elif 600 < passed:
             self.kill()
-
+# Determines when to self terminate amid gameplay
 
 class ShipExplosion(sprite.Sprite):
     def __init__(self, ship, *groups):
@@ -306,7 +298,7 @@ class ShipExplosion(sprite.Sprite):
         self.image = IMAGES['ship']
         self.rect = self.image.get_rect(topleft=(ship.rect.x, ship.rect.y))
         self.timer = time.get_ticks()
-
+# Creates file path to import the image of exploding ship
     def update(self, current_time, *args):
         passed = current_time - self.timer
         if 300 < passed <= 600:
@@ -314,7 +306,7 @@ class ShipExplosion(sprite.Sprite):
         elif 900 < passed:
             self.kill()
 
-
+# self timer determines when to terminate animation
 class Life(sprite.Sprite):
     def __init__(self, xpos, ypos):
         sprite.Sprite.__init__(self)
