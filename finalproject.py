@@ -421,7 +421,7 @@ Initializes the colors used in display
 
             self.note.play()
             self.noteTimer += self.enemies.moveTime
-
+# Main music is played during standard gameplay
     @staticmethod
     def should_exit(evt):
         # type: (pygame.event.EventType) -> bool
@@ -453,7 +453,7 @@ Initializes the colors used in display
                             self.bullets.add(rightbullet)
                             self.allSprites.add(self.bullets)
                             self.sounds['shoot2'].play()
-
+# Sounds are used when "shooting" bullets during gameplay
     def make_enemies(self):
         enemies = EnemiesGroup(10, 5)
         for row in range(5):
@@ -462,7 +462,7 @@ Initializes the colors used in display
                 enemy.rect.x = 157 + (column * 50)
                 enemy.rect.y = self.enemyPosition + (row * 45)
                 enemies.add(enemy)
-
+# Enemy movements
         self.enemies = enemies
 
     def make_enemies_shoot(self):
@@ -473,7 +473,7 @@ Initializes the colors used in display
                        'enemylaser', 'center'))
             self.allSprites.add(self.enemyBullets)
             self.timer = time.get_ticks()
-
+# Enables enemies to fire bullets
     def calculate_score(self, row):
         scores = {0: 30,
                   1: 20,
@@ -482,7 +482,7 @@ Initializes the colors used in display
                   4: 10,
                   5: choice([50, 100, 150, 300])
                   }
-
+# Code keeps track of player score during gameplay
         score = scores[row]
         self.score += score
         return score
@@ -500,17 +500,17 @@ Initializes the colors used in display
         self.screen.blit(self.enemy2, (318, 320))
         self.screen.blit(self.enemy3, (318, 370))
         self.screen.blit(self.enemy4, (299, 420))
-
+# Enemies connect to image files and their location during the game
     def check_collisions(self):
         sprite.groupcollide(self.bullets, self.enemyBullets, True, True)
-
+# Collisions with enemy sprites
         for enemy in sprite.groupcollide(self.enemies, self.bullets,
                                          True, True).keys():
             self.sounds['invaderkilled'].play()
             self.calculate_score(enemy.row)
             EnemyExplosion(enemy, self.explosionsGroup)
             self.gameTimer = time.get_ticks()
-
+# Plays sound when invader is killed
         for mystery in sprite.groupcollide(self.mysteryGroup, self.bullets,
                                            True, True).keys():
             mystery.mysteryEntered.stop()
@@ -520,7 +520,8 @@ Initializes the colors used in display
             newShip = Mystery()
             self.allSprites.add(newShip)
             self.mysteryGroup.add(newShip)
-
+# Mystery ship enters game with accompaning sound 
+# New sprite created (newShip)
         for player in sprite.groupcollide(self.playerGroup, self.enemyBullets,
                                           True, True).keys():
             if self.life3.alive():
@@ -537,7 +538,7 @@ Initializes the colors used in display
             self.makeNewShip = True
             self.shipTimer = time.get_ticks()
             self.shipAlive = False
-
+# Ship explosion along with sound effect (shipexplosiono)
         if self.enemies.bottom >= 540:
             sprite.groupcollide(self.enemies, self.playerGroup, True, True)
             if not self.player.alive() or self.enemies.bottom >= 600:
