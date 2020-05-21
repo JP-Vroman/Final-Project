@@ -327,7 +327,7 @@ class Text(object):
     def draw(self, surface):
         surface.blit(self.surface, self.rect)
 
-
+# Creates rectangle on screen
 class SpaceInvaders(object):
     def __init__(self):
         # It seems, in Linux buffersize=512 is not enough, use 4096 to prevent:
@@ -354,12 +354,15 @@ class SpaceInvaders(object):
         self.enemy4Text = Text(FONT, 25, '   =  ?????', RED, 368, 420)
         self.scoreText = Text(FONT, 20, 'Score', WHITE, 5, 5)
         self.livesText = Text(FONT, 20, 'Lives ', WHITE, 640, 5)
-
+'''
+Explains the commands and text displayed
+Initializes the colors used in display
+'''
         self.life1 = Life(715, 3)
         self.life2 = Life(742, 3)
         self.life3 = Life(769, 3)
         self.livesGroup = sprite.Group(self.life1, self.life2, self.life3)
-
+# Creates lives for main player sprite
     def reset(self, score):
         self.player = Ship()
         self.playerGroup = sprite.Group(self.player)
@@ -380,7 +383,9 @@ class SpaceInvaders(object):
         self.create_audio()
         self.makeNewShip = False
         self.shipAlive = True
-
+# Self timer for enemies and the ship
+# Timer opperates on a series of ticks
+# Sounds are triggered at the end of timer
     def make_blockers(self, number):
         blockerGroup = sprite.Group()
         for row in range(4):
@@ -390,7 +395,7 @@ class SpaceInvaders(object):
                 blocker.rect.y = BLOCKERS_POSITION + (row * blocker.height)
                 blockerGroup.add(blocker)
         return blockerGroup
-
+# Settings for blocker sprites and movements
     def create_audio(self):
         self.sounds = {}
         for sound_name in ['shoot', 'shoot2', 'invaderkilled', 'mysterykilled',
@@ -398,7 +403,7 @@ class SpaceInvaders(object):
             self.sounds[sound_name] = mixer.Sound(
                 SOUND_PATH + '{}.wav'.format(sound_name))
             self.sounds[sound_name].set_volume(0.2)
-
+# Releases sounds for sprites being killed
         self.musicNotes = [mixer.Sound(SOUND_PATH + '{}.wav'.format(i)) for i
                            in range(4)]
         for sound in self.musicNotes:
