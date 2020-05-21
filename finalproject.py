@@ -544,12 +544,12 @@ Initializes the colors used in display
             if not self.player.alive() or self.enemies.bottom >= 600:
                 self.gameOver = True
                 self.startGame = False
-
+# Confused on this piece of code, could be game over or launch game?
         sprite.groupcollide(self.bullets, self.allBlockers, True, True)
         sprite.groupcollide(self.enemyBullets, self.allBlockers, True, True)
         if self.enemies.bottom >= BLOCKERS_POSITION:
             sprite.groupcollide(self.enemies, self.allBlockers, False, True)
-
+# What happens when blocker and enemies intercept each other
     def create_new_ship(self, createShip, currentTime):
         if createShip and (currentTime - self.shipTimer > 900):
             self.player = Ship()
@@ -557,7 +557,7 @@ Initializes the colors used in display
             self.playerGroup.add(self.player)
             self.makeNewShip = False
             self.shipAlive = True
-
+# Creates brand new ship and inputs it into gameplay
     def create_game_over(self, currentTime):
         self.screen.blit(self.background, (0, 0))
         passed = currentTime - self.timer
@@ -571,11 +571,11 @@ Initializes the colors used in display
             self.screen.blit(self.background, (0, 0))
         elif passed > 3000:
             self.mainScreen = True
-
+# INITIALIZES game over screen and settings for it
         for e in event.get():
             if self.should_exit(e):
                 sys.exit()
-
+# Exit gameplay
     def main(self):
         while True:
             if self.mainScreen:
@@ -600,7 +600,7 @@ Initializes the colors used in display
                         self.reset(0)
                         self.startGame = True
                         self.mainScreen = False
-
+# This part of code is confusing to me, (possibly something with the blocker sprites)
             elif self.startGame:
                 if not self.enemies and not self.explosionsGroup:
                     currentTime = time.get_ticks()
@@ -636,7 +636,7 @@ Initializes the colors used in display
                     self.check_collisions()
                     self.create_new_ship(self.makeNewShip, currentTime)
                     self.make_enemies_shoot()
-
+# Enemies shooting at main sprite (rocketship)
             elif self.gameOver:
                 currentTime = time.get_ticks()
                 # Reset enemy starting position
@@ -646,7 +646,7 @@ Initializes the colors used in display
             display.update()
             self.clock.tick(60)
 
-
+# Code ends gameplay (THE END)
 if __name__ == '__main__':
     game = SpaceInvaders()
     game.main()
